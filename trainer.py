@@ -6,18 +6,19 @@ from models import DQN_LSTM, TwoLayerNN
 from replay_buffer import ReplayBuffer
 from learned_optimizer import Learned_Optimizer
 from environment import OptimizerEnvironment
+from dataset import get_mnist_projected_dataloader
 from config import *
 import random
 
 class Trainer:
-    def __init__(self, train_data, train_labels):
+    def __init__(self):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.policy_net = DQN_LSTM(48, ACTION_SIZE, STATE_SIZE).to(self.device)
         self.target_net = DQN_LSTM(48, ACTION_SIZE, STATE_SIZE).to(self.device)
         self.target_net.load_state_dict(self.policy_net.state_dict())
         self.optimizer = optim.Adam(self.policy_net.parameters(), lr=LR)
         self.memory = ReplayBuffer(BUFFER_SIZE)
-        self.train_loader = DataLoader(TensorDataset(train_data, train_labels), batch_size=64, shuffle=True)
+        self.train_loader = get_mnist_projected_dataloader()
 
     def select_action(self, state):
         if random.random() < EPSILON:
