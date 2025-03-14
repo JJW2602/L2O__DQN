@@ -21,5 +21,5 @@ class DQN_LSTM(nn.Module):
     
     def forward(self, x):
         x, _ = self.lstm(x.unsqueeze(0))
-        x = self.fc(x[:, -1, :])
+        x = self.fc(x.squeeze(0))
         return x

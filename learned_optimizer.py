@@ -17,26 +17,10 @@ class Learned_Optimizer(optim.Optimizer):
         defaults = dict(lr=self.lr)
         super(Learned_Optimizer, self).__init__(params, defaults)
 
-    def step(self, closure=None):
-        loss = None
-        if closure is not None:
-            loss = closure()
-
-        for group in self.param_groups:
-            for p in group['params']:
-                if p.grad is None:
-                    continue
-                
-                grad = p.grad.data
-                state = p.data.view(1, -1)  # 현재 weight를 flatten하여 state로 변환
-                
-                with torch.no_grad():
-                    action_values = self.model(state)  # DQN_LSTM이 예측한 Q-values
-                    action_idx = torch.argmax(action_values, dim=-1).item()  # 가장 높은 Q-value의 action 선택
-                
-                # 선택된 optimizer에 따라 step 실행
-                self.optimizers[action_idx].zero_grad()
-                p.grad = grad  # 현재 gradient 적용
-                self.optimizers[action_idx].step()
-
-        return loss
+    def zero_grad(self):
+        for opt in self.optimizers:
+            opt.zero_grad()
+    
+    def step(self, action):
+        """선택된 action(optimizer)에 따라 모델의 파라미터를 업데이트"""
+        self.optimizers[action].step()

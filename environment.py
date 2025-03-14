@@ -1,38 +1,39 @@
 import torch
 import random
 import numpy as np
-from sklearn.decomposition import PCA
+from sklearn.random_projection import GaussianRandomProjection
 from collections import deque
 from config import ACTION_SIZE, EPSILON, PCA_COMPONENTS
 
 class OptimizerEnvironment:
     def __init__(self, model):
         self.model = model
-        self.pca = PCA(n_components=PCA_COMPONENTS)
+        self.rp = GaussianRandomProjection(n_components=PCA_COMPONENTS)
         self.prev_losses = deque(maxlen=50)  # Moving average of past updates
     
     def get_state(self):
         """현재 MLP의 전체 파라미터와 Gradient를 100차원으로 축소 후 반환."""
         weights = []
         gradients = []
-        
+      
         for param in self.model.parameters():
             weights.append(param.data.view(-1))
             if param.grad is not None:
                 gradients.append(param.grad.data.view(-1))
             else:
                 gradients.append(torch.zeros_like(param.data.view(-1)))
-        
         weights = torch.cat(weights).cpu().numpy()
         gradients = torch.cat(gradients).cpu().numpy()
-        
+        print("graidents:",gradients)
         # PCA 변환
-        reduced_weights = self.pca.fit_transform(weights.reshape(1, -1))[0]
-        reduced_gradients = self.pca.fit_transform(gradients.reshape(1, -1))[0]
-        
+
+        reduced_weights = self.rp.fit_transform(weights.reshape(1, -1)) # 2842 -> 100 축소
+        reduced_gradients = self.rp.fit_transform(gradients.reshape(1, -1))        
         moving_avg = np.mean(list(self.prev_losses)) if self.prev_losses else 0
-        
-        state = np.concatenate([reduced_weights, reduced_gradients, [moving_avg]])
+        print("reduce_weights: ",reduced_weights)
+        print("len of reduce_weights:",len(reduced_weights[0]))
+
+        state = np.concatenate([reduced_weights[0], reduced_gradients[0], [moving_avg]])
         return torch.tensor(state, device=self.model.fc1.weight.device, dtype=torch.float32)
     
     def get_reward(self, loss):
