@@ -24,8 +24,8 @@ class OptimizerEnvironment:
                 gradients.append(torch.zeros_like(param.data.view(-1)))
         weights = torch.cat(weights).cpu().numpy()
         gradients = torch.cat(gradients).cpu().numpy()
-        print("graidents:",gradients)
-        # PCA 변환
+ 
+        # RP 변환
 
         reduced_weights = self.rp.fit_transform(weights.reshape(1, -1)) # 2842 -> 100 축소
         reduced_gradients = self.rp.fit_transform(gradients.reshape(1, -1))        
