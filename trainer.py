@@ -36,15 +36,17 @@ class Trainer:
 
         q_values = self.policy_net(states).gather(1, actions.unsqueeze(1)).squeeze()
         next_q_values = self.target_net(next_states).max(1)[0].detach()
+        dones = dones.float()
         expected_q_values = rewards + (GAMMA * next_q_values * (1 - dones))
         
+        q_values = q_values.to(dtype=torch.float32)
+        expected_q_values = expected_q_values.to(dtype=torch.float32)
         loss = F.mse_loss(q_values, expected_q_values)
         self.optimizer.zero_grad()
         loss.backward()
         self.optimizer.step()
     
     def train(self, epochs=50):
-        print(" Trainer.train() 시작됨!")
         for epoch in range(epochs):
             model = TwoLayerNN().to(self.device)
             params = list(model.parameters())
