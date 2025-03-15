@@ -9,7 +9,7 @@ class OptimizerEnvironment:
     def __init__(self, model):
         self.model = model
         self.rp = GaussianRandomProjection(n_components=PCA_COMPONENTS)
-        self.prev_losses = deque(maxlen=50)  # Moving average of past updates
+        self.prev_losses = deque()  # Moving average of past updates
     
     def get_state(self):
         """현재 MLP의 전체 파라미터와 Gradient를 100차원으로 축소 후 반환."""
@@ -36,9 +36,10 @@ class OptimizerEnvironment:
     
     def get_reward(self, loss):
         """첨부된 수식에 따라 Reward를 계산."""
+        
         if len(self.prev_losses) > 0:
             prev_loss = self.prev_losses[-1]
-            reward = - (np.log(loss.item()) - np.log(prev_loss)) / (len(self.prev_losses) - 1)
+            reward = - (np.log(loss.item()) - np.log(prev_loss)) / (len(self.prev_losses))
         else:
             reward = 0
         self.prev_losses.append(loss.item())

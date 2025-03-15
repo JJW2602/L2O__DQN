@@ -2,6 +2,7 @@ import torch
 import torch.optim as optim
 import torch.nn.functional as F
 import numpy as np
+import matplotlib.pyplot as plt
 from collections import defaultdict
 from models import DQN_LSTM, TwoLayerNN
 from replay_buffer import ReplayBuffer
@@ -11,6 +12,8 @@ from dataset import get_mnist_projected_dataloader
 from config import *
 import random
 import time
+import os
+import json
 
 class Trainer:
     def __init__(self):
@@ -21,6 +24,8 @@ class Trainer:
         self.optimizer = optim.Adam(self.policy_net.parameters(), lr=LR)
         self.memory = ReplayBuffer(BUFFER_SIZE)
         self.train_loader = get_mnist_projected_dataloader()
+        self.track_data_path = "track_data"
+        os.makedirs(self.track_data_path, exist_ok=True)
     
     def optimize_model(self):
         if len(self.memory) < BATCH_SIZE:
@@ -47,6 +52,7 @@ class Trainer:
         self.optimizer.step()
     
     def train(self, episodes=500, epochs_per_episode=10):
+        total_rewards_data = []
         for episode in range(episodes):
             model = TwoLayerNN().to(self.device)
             params = list(model.parameters())
@@ -55,10 +61,11 @@ class Trainer:
             env = OptimizerEnvironment(model)
             learned_optimizer = Learned_Optimizer(params, self.policy_net)
             state = env.get_state()
-            total_loss = 0
             correct = 0
             total_samples = 0
             action_counts = defaultdict(int)  # Action 선택 횟수 (에피소드마다 초기화)
+            total_episode_reward = 0  # 총 reward 합산
+            episode_data = []  # 각 iteration에서의 reward 기록
 
             print(f"\n=== Episode {episode+1}/{episodes} 시작 ===")
             episode_start_time = time.time()
@@ -79,7 +86,14 @@ class Trainer:
                     
                     next_state = env.get_state()
                     reward = env.get_reward(loss)
-                    done = batch_idx == len(self.train_loader) - 1                
+                    total_episode_reward += float(reward)  # 총 reward 계산
+                    done = batch_idx == len(self.train_loader) - 1         
+                    episode_data.append({
+                        "iteration": batch_idx + 1,
+                        "reward": float(reward),
+                        "action": action,
+                        "loss": loss.item()
+                    })  # iteration별 reward 저장       
                     
                     self.memory.push(state, action, reward, next_state, done)
                     state = next_state
@@ -90,14 +104,37 @@ class Trainer:
                     pred = output.argmax(dim=1, keepdim=True)
                     correct += pred.eq(target.view_as(pred)).sum().item()
                     total_samples += target.size(0)
-                    total_loss += loss.item()
 
                 epoch_time = time.time() - epoch_start_time
                 # 로그 출력
-                print(f"Episode {episode+1}, Epoch {epoch+1}/{epochs_per_episode}, Loss: {total_loss:.4f}, Accuracy: {correct / total_samples:.4f}, Time: {epoch_time:.2f}s")
+                print(f"Episode {episode+1}, Epoch {epoch+1}/{epochs_per_episode}, Loss: {loss.item():.4f}, Accuracy: {correct / total_samples:.4f}, Time: {epoch_time:.2f}s, Action Counts: {dict(action_counts)}")
                 if epoch % TARGET_UPDATE == 0:
                     self.target_net.load_state_dict(self.policy_net.state_dict())
 
             episode_time = time.time() - episode_start_time
             print(f"=== Episode {episode+1} 종료: 총 시간 {episode_time:.2f}s ===")
+            print(f"Total Episode Reward: {total_episode_reward:.4f}")
             print(f"Action Counts: {dict(action_counts)}")
+            
+            #data_track file 저장장
+            episode_file = os.path.join(self.track_data_path, f"episode_{episode+1}.json")
+            with open(episode_file, "w") as f:
+                json.dump(episode_data, f, indent=4)
+            
+            total_rewards_data.append({
+                "episode": episode+1,
+                "total_reward": total_episode_reward
+            })
+            total_rewards_file = os.path.join(self.track_data_path, "total_episode.json")
+            with open(total_rewards_file, "w") as f:
+                json.dump(total_rewards_data, f, indent=4)
+
+    def plot_rewards(self):
+        plt.figure(figsize=(10, 5))
+        for ep, rewards in enumerate(self.episode_rewards):
+            plt.plot(rewards, label=f"Episode {ep+1}", alpha=0.5)
+        plt.xlabel("Iteration")
+        plt.ylabel("Reward")
+        plt.title("Reward Progression per Iteration")
+        plt.legend()
+        plt.show()

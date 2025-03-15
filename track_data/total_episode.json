@@ -1,0 +1,14 @@
+[
+    {
+        "episode": 1,
+        "total_reward": 0.04225939198093548
+    },
+    {
+        "episode": 2,
+        "total_reward": 0.03333388343995486
+    },
+    {
+        "episode": 3,
+        "total_reward": 0.08974289617551914
+    }
+]
