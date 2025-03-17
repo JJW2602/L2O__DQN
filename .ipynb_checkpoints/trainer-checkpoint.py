@@ -14,12 +14,14 @@ import random
 import time
 import os
 import json
+import wandb
 
 class Trainer:
     def __init__(self):
+        wandb.init(project="DQN_LSTM_Training")  # WandB 프로젝트 초기화
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.policy_net = DQN_LSTM(201, ACTION_SIZE, STATE_SIZE).to(self.device)
-        self.target_net = DQN_LSTM(201, ACTION_SIZE, STATE_SIZE).to(self.device)
+        self.policy_net = DQN_LSTM(100, ACTION_SIZE, STATE_SIZE).to(self.device)
+        self.target_net = DQN_LSTM(100, ACTION_SIZE, STATE_SIZE).to(self.device)
         self.target_net.load_state_dict(self.policy_net.state_dict())
         self.optimizer = optim.Adam(self.policy_net.parameters(), lr=LR)
         self.memory = ReplayBuffer(BUFFER_SIZE)
@@ -46,7 +48,7 @@ class Trainer:
         
         q_values = q_values.to(dtype=torch.float32)
         expected_q_values = expected_q_values.to(dtype=torch.float32)
-        loss = F.mse_loss(q_values, expected_q_values)
+        loss = F.smooth_l1_loss(q_values, expected_q_values)
         self.optimizer.zero_grad()
         loss.backward()
         self.optimizer.step()
@@ -100,6 +102,17 @@ class Trainer:
                     
                     self.optimize_model()
 
+                    # WandB에 Value Function 로깅 추가
+                    value_function = self.policy_net(state.unsqueeze(0)).cpu().detach().numpy()  # Value Function 추출
+                    wandb.log({
+                        "Episode": episode + 1,
+                        "Epoch": epoch + 1,
+                        "Iteration": batch_idx + 1,
+                        "Loss": loss.item(),
+                        "Reward": float(reward),
+                        "Value Function": value_function.mean()  # 평균 Value Function 로깅
+                    })
+
                     # Accuracy 계산
                     pred = output.argmax(dim=1, keepdim=True)
                     correct += pred.eq(target.view_as(pred)).sum().item()
@@ -116,7 +129,7 @@ class Trainer:
             print(f"Total Episode Reward: {total_episode_reward:.4f}")
             print(f"Action Counts: {dict(action_counts)}")
             
-            #data_track file 저장장
+            #data_track file 저장
             episode_file = os.path.join(self.track_data_path, f"episode_{episode+1}.json")
             with open(episode_file, "w") as f:
                 json.dump(episode_data, f, indent=4)

@@ -20,8 +20,8 @@ class Trainer:
     def __init__(self):
         wandb.init(project="DQN_LSTM_Training")  # WandB 프로젝트 초기화
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.policy_net = DQN_LSTM(201, ACTION_SIZE, STATE_SIZE).to(self.device)
-        self.target_net = DQN_LSTM(201, ACTION_SIZE, STATE_SIZE).to(self.device)
+        self.policy_net = DQN_LSTM(100, ACTION_SIZE, STATE_SIZE).to(self.device)
+        self.target_net = DQN_LSTM(100, ACTION_SIZE, STATE_SIZE).to(self.device)
         self.target_net.load_state_dict(self.policy_net.state_dict())
         self.optimizer = optim.Adam(self.policy_net.parameters(), lr=LR)
         self.memory = ReplayBuffer(BUFFER_SIZE)
@@ -48,7 +48,7 @@ class Trainer:
         
         q_values = q_values.to(dtype=torch.float32)
         expected_q_values = expected_q_values.to(dtype=torch.float32)
-        loss = F.mse_loss(q_values, expected_q_values)
+        loss = F.smooth_l1_loss(q_values, expected_q_values)
         self.optimizer.zero_grad()
         loss.backward()
         self.optimizer.step()
