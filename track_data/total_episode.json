@@ -802,5 +802,261 @@
     {
         "episode": 201,
         "total_reward": 0.10183158885356464
+    },
+    {
+        "episode": 202,
+        "total_reward": 0.12220856296176794
+    },
+    {
+        "episode": 203,
+        "total_reward": 0.08373036897701662
+    },
+    {
+        "episode": 204,
+        "total_reward": 0.09824088725291132
+    },
+    {
+        "episode": 205,
+        "total_reward": 0.09280721217817281
+    },
+    {
+        "episode": 206,
+        "total_reward": 0.08232050025298886
+    },
+    {
+        "episode": 207,
+        "total_reward": 0.11217036081923229
+    },
+    {
+        "episode": 208,
+        "total_reward": 0.08447405246416333
+    },
+    {
+        "episode": 209,
+        "total_reward": 0.07971146181331405
+    },
+    {
+        "episode": 210,
+        "total_reward": 0.052448646734543275
+    },
+    {
+        "episode": 211,
+        "total_reward": 0.0727069816398472
+    },
+    {
+        "episode": 212,
+        "total_reward": 0.046997935098800354
+    },
+    {
+        "episode": 213,
+        "total_reward": 0.06549540905615896
+    },
+    {
+        "episode": 214,
+        "total_reward": 0.10149959137830353
+    },
+    {
+        "episode": 215,
+        "total_reward": 0.07591610740048577
+    },
+    {
+        "episode": 216,
+        "total_reward": 0.12052133822008423
+    },
+    {
+        "episode": 217,
+        "total_reward": 0.0961069013523428
+    },
+    {
+        "episode": 218,
+        "total_reward": 0.1004735474403208
+    },
+    {
+        "episode": 219,
+        "total_reward": 0.10793686506794258
+    },
+    {
+        "episode": 220,
+        "total_reward": 0.08051511291800954
+    },
+    {
+        "episode": 221,
+        "total_reward": 0.10838629954642513
+    },
+    {
+        "episode": 222,
+        "total_reward": 0.1098578555556008
+    },
+    {
+        "episode": 223,
+        "total_reward": 0.0614743717392715
+    },
+    {
+        "episode": 224,
+        "total_reward": 0.0358284556729074
+    },
+    {
+        "episode": 225,
+        "total_reward": 0.08672417339092306
+    },
+    {
+        "episode": 226,
+        "total_reward": 0.05730461021703341
+    },
+    {
+        "episode": 227,
+        "total_reward": 0.08956558607915543
+    },
+    {
+        "episode": 228,
+        "total_reward": 0.11766973607912322
+    },
+    {
+        "episode": 229,
+        "total_reward": 0.07961856503902784
+    },
+    {
+        "episode": 230,
+        "total_reward": 0.06576830449596724
+    },
+    {
+        "episode": 231,
+        "total_reward": 0.0677526944360758
+    },
+    {
+        "episode": 232,
+        "total_reward": 0.05815843997094935
+    },
+    {
+        "episode": 233,
+        "total_reward": 0.11637756917259767
+    },
+    {
+        "episode": 234,
+        "total_reward": 0.08002916483412029
+    },
+    {
+        "episode": 235,
+        "total_reward": 0.11427447637768653
+    },
+    {
+        "episode": 236,
+        "total_reward": 0.15021430772750102
+    },
+    {
+        "episode": 237,
+        "total_reward": 0.05491213892617952
+    },
+    {
+        "episode": 238,
+        "total_reward": 0.061092620660585024
+    },
+    {
+        "episode": 239,
+        "total_reward": 0.07722534889385316
+    },
+    {
+        "episode": 240,
+        "total_reward": 0.07576005492732495
+    },
+    {
+        "episode": 241,
+        "total_reward": 0.04681900148138239
+    },
+    {
+        "episode": 242,
+        "total_reward": 0.058542422540161176
+    },
+    {
+        "episode": 243,
+        "total_reward": 0.0885369779954729
+    },
+    {
+        "episode": 244,
+        "total_reward": 0.0403263531097831
+    },
+    {
+        "episode": 245,
+        "total_reward": 0.10748680175656396
+    },
+    {
+        "episode": 246,
+        "total_reward": 0.0678032182765364
+    },
+    {
+        "episode": 247,
+        "total_reward": 0.13340991586926068
+    },
+    {
+        "episode": 248,
+        "total_reward": 0.08405479438644095
+    },
+    {
+        "episode": 249,
+        "total_reward": 0.10790650909984822
+    },
+    {
+        "episode": 250,
+        "total_reward": 0.12091914213299063
+    },
+    {
+        "episode": 251,
+        "total_reward": 0.0806591498785326
+    },
+    {
+        "episode": 252,
+        "total_reward": 0.12328267246128422
+    },
+    {
+        "episode": 253,
+        "total_reward": 0.09367094245394648
+    },
+    {
+        "episode": 254,
+        "total_reward": 0.07045469018336604
+    },
+    {
+        "episode": 255,
+        "total_reward": 0.06733632742606244
+    },
+    {
+        "episode": 256,
+        "total_reward": 0.07721923333247688
+    },
+    {
+        "episode": 257,
+        "total_reward": 0.02654521653832866
+    },
+    {
+        "episode": 258,
+        "total_reward": 0.028730618838376302
+    },
+    {
+        "episode": 259,
+        "total_reward": 0.09307401540404524
+    },
+    {
+        "episode": 260,
+        "total_reward": 0.048620892044123155
+    },
+    {
+        "episode": 261,
+        "total_reward": 0.08166764811546368
+    },
+    {
+        "episode": 262,
+        "total_reward": 0.08800621342918265
+    },
+    {
+        "episode": 263,
+        "total_reward": 0.11329552641795942
+    },
+    {
+        "episode": 264,
+        "total_reward": 0.06980770380014285
+    },
+    {
+        "episode": 265,
+        "total_reward": 0.03535188106327608
     }
 ]

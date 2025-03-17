@@ -14,9 +14,11 @@ import random
 import time
 import os
 import json
+import wandb
 
 class Trainer:
     def __init__(self):
+        wandb.init(project="DQN_LSTM_Training")  # WandB 프로젝트 초기화
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.policy_net = DQN_LSTM(201, ACTION_SIZE, STATE_SIZE).to(self.device)
         self.target_net = DQN_LSTM(201, ACTION_SIZE, STATE_SIZE).to(self.device)
@@ -99,6 +101,17 @@ class Trainer:
                     state = next_state
                     
                     self.optimize_model()
+
+                    # WandB에 Value Function 로깅 추가
+                    value_function = self.policy_net(state.unsqueeze(0)).cpu().detach().numpy()  # Value Function 추출
+                    wandb.log({
+                        "Episode": episode + 1,
+                        "Epoch": epoch + 1,
+                        "Iteration": batch_idx + 1,
+                        "Loss": loss.item(),
+                        "Reward": float(reward),
+                        "Value Function": value_function.mean()  # 평균 Value Function 로깅
+                    })
 
                     # Accuracy 계산
                     pred = output.argmax(dim=1, keepdim=True)

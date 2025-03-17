@@ -31,7 +31,7 @@ class OptimizerEnvironment:
         reduced_gradients = self.rp.fit_transform(gradients.reshape(1, -1))        
         moving_avg = np.mean(list(self.prev_losses)) if self.prev_losses else 0
 
-        state = np.concatenate([reduced_weights[0], reduced_gradients[0], [moving_avg]])
+        state = reduced_weights[0]
         return torch.tensor(state, device=self.model.fc1.weight.device, dtype=torch.float32)
     
     def get_reward(self, loss):
