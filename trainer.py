@@ -116,7 +116,7 @@ class Trainer:
             print(f"Total Episode Reward: {total_episode_reward:.4f}")
             print(f"Action Counts: {dict(action_counts)}")
             
-            #data_track file 저장장
+            #data_track file 저장
             episode_file = os.path.join(self.track_data_path, f"episode_{episode+1}.json")
             with open(episode_file, "w") as f:
                 json.dump(episode_data, f, indent=4)
